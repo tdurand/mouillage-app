@@ -4197,9 +4197,9 @@ react-is@^16.4.1:
   version "16.4.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.4.1.tgz#d624c4650d2c65dbd52c72622bbf389435d9776e"
 
-react-native-maps@^0.21.0:
+"react-native-maps@github:mikemorris/react-native-maps#ef5c839252e427268ae2ebbf4f0cced1cb51fed6":
   version "0.21.0"
-  resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.21.0.tgz#005f58e93d7623ad59667e8002101970ddf235c2"
+  resolved "https://codeload.github.com/mikemorris/react-native-maps/tar.gz/ef5c839252e427268ae2ebbf4f0cced1cb51fed6"
   dependencies:
     babel-plugin-module-resolver "^2.3.0"
     babel-preset-react-native "1.9.0"
