@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Alert, Animated } from 'react-native';
+import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
+import { createStackNavigator } from 'react-navigation';
+import Map from './Map';
 
 import boatIcon from './assets/boat.png';
 import anchorIcon from './assets/anchor2.png';
@@ -14,7 +16,13 @@ const style = {
   ]
 }
 
-export default class App extends Component {
+class App extends Component {
+
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('title', 'Anchor positionning'),
+    }
+  }
 
   constructor(props) {
     super(props);
@@ -35,7 +43,7 @@ export default class App extends Component {
       distanceFilter: 1,
       notificationTitle: 'Mouillage app location tracking',
       notificationText: 'enabled',
-      debug: true,
+      debug: false,
       startOnBoot: false,
       stopOnTerminate: false,
       locationProvider: BackgroundGeolocation.ACTIVITY_PROVIDER,
@@ -152,53 +160,25 @@ export default class App extends Component {
   }
 
   render() {
+
+    const anchorDropped = this.props.navigation.getParam("anchorDropped", false);
+
     // console.log(this.state.trackingHistory);
     return (
       <View style={styles.container}>
-        <MapView
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.001,
-          }}
-          showsCompass={true}
-          style={styles.map}
-        >
-          {/* <Polyline
-            coordinates={this.state.trackingHistory}
-            strokeColor="#000"
-            strokeWidth={5}
-          /> */}
-          <Circle 
-            radius={30}
-            strokeWidth={3}
-            strokeColor="red"
-            center={{
-              latitude: 37.78825,
-              longitude: -122.4324
-            }}
+        <Map />
+        {!anchorDropped &&
+          <Button
+            title="Set anchor position"
+            onPress={() => this.props.navigation.push('Home', {anchorDropped: true, title: 'Radius'})}
           />
-          {/* <Marker 
-            title="Boat"
-            image={boatIcon}
-            coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324
-            }}
-          /> */}
-          <MapView.Marker
-            key='anchor-marker'
-            anchor={{ x: 0.5, y: 0.5 }}
-            // zIndex={this.props.zIndex}
-            coordinate={{
-              latitude: 37.78825,
-              longitude: -122.4324
-            }}
-          >
-            <Animated.Image ref='image' style={style} source={anchorIcon} />
-          </MapView.Marker>
-        </MapView>
+        }
+        {anchorDropped &&
+          <Button
+            title="Start alarm"
+            onPress={() => this.props.navigation.push('Home', {anchorDropped: true, radiusSet: true, title: 'Alarm working'})}
+          />
+        }
       </View>
     );
   }
@@ -214,3 +194,36 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   }
 });
+
+class DetailsScreen extends React.Component {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Text>Details Screen</Text>
+      </View>
+    );
+  }
+}
+
+const RootStack = createStackNavigator(
+  {
+    Home: App,
+    Details: DetailsScreen,
+  },
+  {
+    initialRouteName: 'Home',
+    transitionConfig : () => ({
+      transitionSpec: {
+        duration: 0,
+        timing: Animated.timing,
+        easing: Easing.step0,
+      },
+    })
+  }
+);
+
+export default class Main extends React.Component {
+  render() {
+    return <RootStack />;
+  }
+}
