@@ -35,5 +35,7 @@ ext {
     targetSdkVersion = 26
     supportLibVersion = "26.1.0"
     gradle3EXPERIMENTAL = "yes"
+    // See this comment to set the version: https://github.com/react-community/react-native-maps/issues/818#issuecomment-374427065
+    googlePlayServicesVersion = "15.0.1" 
 }
 

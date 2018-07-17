@@ -101,6 +101,7 @@ android {
         applicationId "com.mouillageapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         ndk {
@@ -141,8 +142,8 @@ dependencies {
         exclude group: 'com.google.android.gms', module: 'play-services-base'
         exclude group: 'com.google.android.gms', module: 'play-services-maps'
     }
-    compile 'com.google.android.gms:play-services-base:+'
-    compile 'com.google.android.gms:play-services-maps:+'
+    compile 'com.google.android.gms:play-services-base:15.0.1'
+    compile 'com.google.android.gms:play-services-maps:15.0.1'
     compile project(':react-native-mauron85-background-geolocation')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
