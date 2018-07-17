@@ -4,6 +4,9 @@ import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
 import { createStackNavigator } from 'react-navigation';
 import Map from './Map';
+import {
+  HeaderBackButton
+} from 'react-navigation'
 
 import boatIcon from './assets/boat.png';
 import anchorIcon from './assets/anchor2.png';
@@ -19,9 +22,20 @@ const style = {
 class App extends Component {
 
   static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('title', 'Anchor positionning'),
+    const anchorDropped = navigation.getParam('anchorDropped', false)
+    const alarmStarted = navigation.getParam('alarmStarted', false)
+
+    let headerConfig = {
+      title: navigation.getParam('title', 'Anchor positionning')
     }
+
+    if(anchorDropped && !alarmStarted) {
+      headerConfig.headerLeft = <HeaderBackButton onPress={() => {
+        navigation.setParams({'anchorDropped': false})
+      }} />
+    }
+
+    return headerConfig
   }
 
   constructor(props) {
@@ -161,7 +175,8 @@ class App extends Component {
 
   render() {
 
-    const anchorDropped = this.props.navigation.getParam("anchorDropped", false);
+    const anchorDropped = this.props.navigation.getParam('anchorDropped', false)
+    const alarmStarted = this.props.navigation.getParam('alarmStarted', false)
 
     // console.log(this.state.trackingHistory);
     return (
@@ -170,13 +185,19 @@ class App extends Component {
         {!anchorDropped &&
           <Button
             title="Set anchor position"
-            onPress={() => this.props.navigation.push('Home', {anchorDropped: true, title: 'Radius'})}
+            onPress={() => this.props.navigation.setParams({ anchorDropped: true, title: 'Adjust radius' })}
           />
         }
-        {anchorDropped &&
+        {anchorDropped && !alarmStarted &&
           <Button
             title="Start alarm"
-            onPress={() => this.props.navigation.push('Home', {anchorDropped: true, radiusSet: true, title: 'Alarm working'})}
+            onPress={() => this.props.navigation.setParams({anchorDropped: true, alarmStarted: true, title: 'Watching anchor'})}
+          />
+        }
+        {anchorDropped && alarmStarted &&
+          <Button
+            title="Stop monitoring"
+            onPress={() => this.props.navigation.setParams({anchorDropped: true, alarmStarted: false, title: 'Confirm settings'})}
           />
         }
       </View>
