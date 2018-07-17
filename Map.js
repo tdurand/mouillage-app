@@ -1,12 +1,11 @@
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
+import { Svg, Image } from 'react-native-svg';
 
 import anchorIcon from './assets/anchor2.png';
 
 const style = {
-  width: 30,
-  height: 43.8,
   transform: [
     { rotate: `30deg` }
   ]
@@ -66,7 +65,7 @@ export default class Map extends PureComponent {
             longitude: -122.4324
           }}
         /> */}
-        <MapView.Marker
+        {/* <MapView.Marker
           key='anchor-marker'
           anchor={{ x: 0.5, y: 0.5 }}
           // zIndex={this.props.zIndex}
@@ -76,7 +75,22 @@ export default class Map extends PureComponent {
           }}
         >
           <Animated.Image ref='image' style={style} source={anchorIcon} />
-        </MapView.Marker>
+        </MapView.Marker> */}
+        <Marker
+          key='anchor-marker'
+          anchor={{ x: 0.5, y: 0.5 }}
+          coordinate={{
+            latitude: 37.78825,
+            longitude: -122.4324
+          }}
+          //image={Icons.location}// This is working but large size of image in release apk
+        >
+          <View>
+            <Svg width="40" height="50" style={style}>
+              <Image width="40" height="50" href={anchorIcon} />
+            </Svg>
+          </View>
+        </Marker>
       </MapView>
     );
   }
