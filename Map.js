@@ -1,15 +1,15 @@
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
-import { Svg, Image } from 'react-native-svg';
+import { Svg, Image, G } from 'react-native-svg';
 
 import anchorIcon from './assets/anchor2.png';
 
-const style = {
-  transform: [
-    { rotate: `30deg` }
-  ]
-}
+// const style = {
+//   transform: [
+//     { rotate: `90deg` }
+//   ]
+// }
 
 const styles = StyleSheet.create({
   map: {
@@ -77,17 +77,39 @@ export default class Map extends PureComponent {
           <Animated.Image ref='image' style={style} source={anchorIcon} />
         </MapView.Marker> */}
         <Marker
-          key='anchor-marker'
-          anchor={{ x: 0.5, y: 0.5 }}
+          key='anchor-marker2'
           coordinate={{
             latitude: 37.78825,
             longitude: -122.4324
           }}
-          //image={Icons.location}// This is working but large size of image in release apk
+        />
+        <Marker
+          key='anchor-marker'
+          // anchor={{ x: 0.5, y: 0.5 }}
+          centerOffset={{ x: -30, y: -40 }}
+          coordinate={{
+            latitude: 37.78825,
+            longitude: -122.4324
+          }}
         >
+          {/* //7 15 15 */}
           <View>
-            <Svg width="40" height="50" style={style}>
-              <Image width="40" height="50" href={anchorIcon} />
+            <Svg 
+              width="30" 
+              height="44"
+            > 
+              {/* <G
+                x="15"
+                y="44"
+                // rotation="30" 
+                origin="0, 0"
+              > */}
+                <Image
+                  width="30"
+                  height="44"
+                  href={anchorIcon} 
+                />
+              {/* </G> */}
             </Svg>
           </View>
         </Marker>
