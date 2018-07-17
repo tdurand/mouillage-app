@@ -7,6 +7,7 @@ import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
@@ -24,7 +25,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new BackgroundGeolocationPackage()
+          new BackgroundGeolocationPackage(),
+          new MapsPackage()
       );
     }
 
