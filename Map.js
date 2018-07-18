@@ -29,6 +29,11 @@ export default class Map extends PureComponent {
 
   render() {
 
+    
+    const imgWidth = 15;
+    // Where 44 is the original height and 30 the original width
+    const imgHeight = (44 * imgWidth) / 30;
+
     return (
       <MapView
         key="test"
@@ -95,27 +100,27 @@ export default class Map extends PureComponent {
           {/* //7 15 15 */}
           <View>
             <Svg 
-              width="88" 
-              height="88"
+              width={imgHeight*2} 
+              height={imgHeight*2} 
             > 
               <G
                 x="0"
                 y="0"
-                rotation="190" 
-                origin="44, 44"
+                rotation="210"
+                origin={`${imgHeight},${imgHeight}`} 
               >
                 <Rect
                   x="0"
                   y="0"
-                  height="88"
-                  width="88"
+                  height={imgHeight * 2} 
+                  width={imgHeight * 2} 
                   stroke="#060"
-                  fill="#060"
+                  fill="transparent"
                 />
                 <Image
-                  x={88/2-30/2}
-                  width="30"
-                  height="44"
+                  x={imgHeight - imgWidth/2}
+                  width={imgWidth}
+                  height={imgHeight}
                   href={anchorIcon} 
                 />
               </G>
