@@ -19,13 +19,23 @@ const styles = StyleSheet.create({
 
 export default class Map extends PureComponent {
 
-  componentDidMount() {
-    console.log('Mounting map')
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentMapCenter: null
+    }
+  }
+
+  mapReady() {
+    console.log(this.map);
+    // debugger;
   }
 
   componentWillUnmount() {
     console.log('Unmounting map')
   }
+  
 
   render() {
 
@@ -36,6 +46,7 @@ export default class Map extends PureComponent {
 
     return (
       <MapView
+        ref={(map) => this.map = map}
         key="test"
         loadingEnabled
         // loadingBackgroundColor="transparent"
@@ -47,6 +58,15 @@ export default class Map extends PureComponent {
         }}
         showsCompass={true}
         style={styles.map}
+        onRegionChange={(region) => {
+          this.setState({
+            currentMapCenter: {
+              latitude: region.latitude,
+              longitude: region.longitude
+            }
+          })
+        }}
+        onMapReady={() => this.mapReady()}
       >
         {/* <Polyline
           coordinates={this.state.trackingHistory}
@@ -81,13 +101,13 @@ export default class Map extends PureComponent {
         >
           <Animated.Image ref='image' style={style} source={anchorIcon} />
         </MapView.Marker> */}
-        <Marker
-          key='anchor-marker2'
-          coordinate={{
-            latitude: 37.78825,
-            longitude: -122.4324
-          }}
-        />
+        {this.state.currentMapCenter &&
+          <MapView.Marker.Animated
+            key='anchor-marker2'
+            pinColor="blue"
+            coordinate={this.state.currentMapCenter}
+          />
+        }
         <Marker
           key='anchor-marker'
           anchor={{ x: 0.5, y: 0.5 }}
