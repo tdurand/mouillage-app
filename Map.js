@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import { Svg, Image, G, Rect } from 'react-native-svg';
 
-import anchorIcon from './assets/anchor2-debug.png';
+import anchorIcon from './assets/anchor2.png';
 
 // const style = {
 //   transform: [
@@ -30,7 +30,7 @@ export default class Map extends PureComponent {
   render() {
 
     
-    const imgWidth = 15;
+    const imgWidth = 20;
     // Where 44 is the original height and 30 the original width
     const imgHeight = (44 * imgWidth) / 30;
 
@@ -109,14 +109,15 @@ export default class Map extends PureComponent {
                 rotation="210"
                 origin={`${imgHeight},${imgHeight}`} 
               >
-                <Rect
+                {/* Debugging Rect */}
+                {/* <Rect
                   x="0"
                   y="0"
                   height={imgHeight * 2} 
                   width={imgHeight * 2} 
                   stroke="#060"
                   fill="transparent"
-                />
+                /> */}
                 <Image
                   x={imgHeight - imgWidth/2}
                   width={imgWidth}
