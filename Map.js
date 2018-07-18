@@ -1,9 +1,9 @@
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
-import { Svg, Image, G } from 'react-native-svg';
+import { Svg, Image, G, Rect } from 'react-native-svg';
 
-import anchorIcon from './assets/anchor2.png';
+import anchorIcon from './assets/anchor2-debug.png';
 
 // const style = {
 //   transform: [
@@ -85,8 +85,8 @@ export default class Map extends PureComponent {
         />
         <Marker
           key='anchor-marker'
-          // anchor={{ x: 0.5, y: 0.5 }}
-          centerOffset={{ x: -30, y: -40 }}
+          anchor={{ x: 0.5, y: 0.5 }}
+          centerOffset={{ x: 0, y: 0 }}
           coordinate={{
             latitude: 37.78825,
             longitude: -122.4324
@@ -95,21 +95,30 @@ export default class Map extends PureComponent {
           {/* //7 15 15 */}
           <View>
             <Svg 
-              width="30" 
-              height="44"
+              width="88" 
+              height="88"
             > 
-              {/* <G
-                x="15"
-                y="44"
-                // rotation="30" 
-                origin="0, 0"
-              > */}
+              <G
+                x="0"
+                y="0"
+                rotation="190" 
+                origin="44, 44"
+              >
+                <Rect
+                  x="0"
+                  y="0"
+                  height="88"
+                  width="88"
+                  stroke="#060"
+                  fill="#060"
+                />
                 <Image
+                  x={88/2-30/2}
                   width="30"
                   height="44"
                   href={anchorIcon} 
                 />
-              {/* </G> */}
+              </G>
             </Svg>
           </View>
         </Marker>
