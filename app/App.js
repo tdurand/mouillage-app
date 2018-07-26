@@ -1,33 +1,46 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
-import GeolocationProvider from './app/utils/GeolocationProvider';
+import GeolocationProvider from './utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
-import Map from './app/components/Map';
+import { Enum } from 'enumify';
+import Map from './components/Map';
 import {
   HeaderBackButton
-} from 'react-navigation'
+} from 'react-navigation';
 
-const style = {
-  width: 30,
-  height: 43.8,
-  transform: [
-    { rotate: `30deg` }
-  ]
-}
+
+class STEPS extends Enum {}
+STEPS.initEnum({
+  SET_ANCHOR_LOCATION: {
+    get title() { return "Anchor location" },
+    get ctaLabel() { return "Set anchor position"},
+    get next() { return STEPS.SET_RADIUS }
+  },
+  SET_RADIUS: {
+    get title() { return "Adjust radius" },
+    get ctaLabel() { return "Start alarm"},
+    get next() { return STEPS.MONITOR },
+    get previous() { return STEPS.SET_ANCHOR_LOCATION }
+  },
+  MONITOR: {
+    get title() { return "Watching anchor" },
+    get ctaLabel() { return "Stop monitoring"},
+    get stop() { return STEPS.SET_ANCHOR_LOCATION }
+  }
+});
 
 class App extends Component {
 
   static navigationOptions = ({ navigation }) => {
-    const anchorDropped = navigation.getParam('anchorDropped', false)
-    const alarmStarted = navigation.getParam('alarmStarted', false)
-
+    const currentStep = navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
+    console.log(currentStep);
     let headerConfig = {
-      title: navigation.getParam('title', 'Anchor positionning')
+      title: currentStep.title
     }
 
-    if(anchorDropped && !alarmStarted) {
+    if(currentStep.previous) {
       headerConfig.headerLeft = <HeaderBackButton onPress={() => {
-        navigation.setParams({'anchorDropped': false})
+        navigation.setParams({'currentStep': currentStep.previous})
       }} />
     }
 
@@ -80,29 +93,28 @@ class App extends Component {
 
   render() {
 
-    const anchorDropped = this.props.navigation.getParam('anchorDropped', false)
-    const alarmStarted = this.props.navigation.getParam('alarmStarted', false)
+    const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
+    console.log(STEPS.enumValueOf(currentStep.name));
 
-    // console.log(this.state.trackingHistory);
     return (
       <View style={styles.container}>
         <Map trackingHistory={this.state.trackingHistory} />
-        {!anchorDropped &&
+        {STEPS.enumValueOf(currentStep.name) === STEPS.SET_ANCHOR_LOCATION &&
           <Button
-            title="Set anchor position"
-            onPress={() => this.props.navigation.setParams({ anchorDropped: true, title: 'Adjust radius' })}
+            title={currentStep.ctaLabel}
+            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.next })}
           />
         }
-        {anchorDropped && !alarmStarted &&
+        {STEPS.enumValueOf(currentStep.name) === STEPS.SET_RADIUS &&
           <Button
-            title="Start alarm"
-            onPress={() => this.props.navigation.setParams({anchorDropped: true, alarmStarted: true, title: 'Watching anchor'})}
+            title={currentStep.ctaLabel}
+            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.next })}
           />
         }
-        {anchorDropped && alarmStarted &&
+        {STEPS.enumValueOf(currentStep.name) === STEPS.MONITOR &&
           <Button
-            title="Stop monitoring"
-            onPress={() => this.props.navigation.setParams({anchorDropped: true, alarmStarted: false, title: 'Confirm settings'})}
+            title={currentStep.ctaLabel}
+            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.stop })}
           />
         }
       </View>
@@ -138,13 +150,13 @@ const RootStack = createStackNavigator(
   },
   {
     initialRouteName: 'Home',
-    transitionConfig : () => ({
-      transitionSpec: {
-        duration: 0,
-        timing: Animated.timing,
-        easing: Easing.step0,
-      },
-    })
+    // transitionConfig : () => ({
+    //   transitionSpec: {
+    //     duration: 0,
+    //     timing: Animated.timing,
+    //     easing: Easing.step0,
+    //   },
+    // })
   }
 );
 

@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import { Svg, Image, G, Rect } from 'react-native-svg';
 
-import anchorIcon from './assets/anchor2.png';
+import anchorIcon from '../../assets/anchor2.png';
 
 // const style = {
 //   transform: [
