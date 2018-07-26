@@ -1,15 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
-import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
-import BackgroundGeolocation from 'react-native-mauron85-background-geolocation';
+import GeolocationProvider from './app/utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
 import Map from './Map';
 import {
   HeaderBackButton
 } from 'react-navigation'
-
-import boatIcon from './assets/boat.png';
-import anchorIcon from './assets/anchor2.png';
 
 const style = {
   width: 30,
@@ -50,24 +46,10 @@ class App extends Component {
     }
   }
 
-  initBackgroundGeolocation() {
-    BackgroundGeolocation.configure({
-      desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
-      stationaryRadius: 1,
-      distanceFilter: 1,
-      notificationTitle: 'Mouillage app location tracking',
-      notificationText: 'enabled',
-      debug: false,
-      startOnBoot: false,
-      stopOnTerminate: false,
-      locationProvider: BackgroundGeolocation.ACTIVITY_PROVIDER,
-      interval: 5000,
-      fastestInterval: 5000,
-      activitiesInterval: 5000,
-      stopOnStillActivity: false
-    });
-
-    BackgroundGeolocation.on('location', (location) => {
+  initGeolocationProvider() {
+    GeolocationProvider.init();
+    GeolocationProvider.on('location', (location) => {
+      console.log(JSON.stringify(location));
       // handle your locations here
       // to perform long running operation on iOS
       // you need to create background task
@@ -84,75 +66,16 @@ class App extends Component {
         trackingHistory: this.state.trackingHistory.concat([lnglat]),
         currentPosition: lnglat
       })
-
-      // BackgroundGeolocation.startTask(taskKey => {
-      //   // execute long running task
-      //   // eg. ajax post location
-      //   // IMPORTANT: task has to be ended by endTask
-      //   BackgroundGeolocation.endTask(taskKey);
-      // });
-    });
-
-    BackgroundGeolocation.on('stationary', (stationaryLocation) => {
-      // handle stationary locations here
-      console.log(stationaryLocation);
-    });
-
-    BackgroundGeolocation.on('error', (error) => {
-      console.log('[ERROR] BackgroundGeolocation error:', error);
-    });
-
-    BackgroundGeolocation.on('start', () => {
-      console.log('[INFO] BackgroundGeolocation service has been started');
-    });
-
-    BackgroundGeolocation.on('stop', () => {
-      console.log('[INFO] BackgroundGeolocation service has been stopped');
-    });
-
-    BackgroundGeolocation.on('authorization', (status) => {
-      console.log('[INFO] BackgroundGeolocation authorization status: ' + status);
-      if (status !== BackgroundGeolocation.AUTHORIZED) {
-        // we need to set delay or otherwise alert may not be shown
-        setTimeout(() =>
-          Alert.alert('App requires location tracking permission', 'Would you like to open app settings?', [
-            { text: 'Yes', onPress: () => BackgroundGeolocation.showAppSettings() },
-            { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' }
-          ]), 1000);
-      }
-    });
-
-    BackgroundGeolocation.on('background', () => {
-      console.log('[INFO] App is in background');
-    });
-
-    BackgroundGeolocation.on('foreground', () => {
-      console.log('[INFO] App is in foreground');
-    });
-
-    BackgroundGeolocation.checkStatus(status => {
-      console.log('[INFO] BackgroundGeolocation service is running', status.isRunning);
-      console.log('[INFO] BackgroundGeolocation services enabled', status.locationServicesEnabled);
-      console.log('[INFO] BackgroundGeolocation auth status: ' + status.authorization);
-
-      // you don't need to check status before start (this is just the example)
-      if (!status.isRunning) {
-        BackgroundGeolocation.start(); //triggers start on start event
-      }
-
-      // you can also just start without checking for status
-      // BackgroundGeolocation.start();
-    });
-
+    })
   }
 
   componentDidMount() {
-    this.initBackgroundGeolocation();
+    this.initGeolocationProvider();
   }
 
   componentWillUnmount() {
     // unregister all event listeners
-    BackgroundGeolocation.events.forEach(event => BackgroundGeolocation.removeAllListeners(event));
+    GeolocationProvider.clean();
   }
 
   renderTrackingHistory () {
