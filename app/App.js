@@ -52,6 +52,8 @@ class App extends Component {
 
     this.state = {
       trackingHistory: [],
+      anchorLocation: null,
+      radius: 20,
       currentPosition: {
         latitude: null,
         longitude: null
