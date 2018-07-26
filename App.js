@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import GeolocationProvider from './app/utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
-import Map from './Map';
+import Map from './app/components/Map';
 import {
   HeaderBackButton
 } from 'react-navigation'
@@ -78,24 +78,6 @@ class App extends Component {
     GeolocationProvider.clean();
   }
 
-  renderTrackingHistory () {
-
-    // if(this.state.trackingHistory.length < 2) {
-    //   return;
-    // }
-
-    // var geojsonLine = { "type": "LineString", "coordinates": this.state.trackingHistory }
-
-    // return (
-    //   <Mapbox.ShapeSource 
-    //     id='trackingHistory' 
-    //     shape={geojsonLine}
-    //   >
-    //     <Mapbox.LineLayer id='trackingHistoryFill' style={layerStyles.trackingHistory} />
-    //   </Mapbox.ShapeSource>
-    // )
-  }
-
   render() {
 
     const anchorDropped = this.props.navigation.getParam('anchorDropped', false)
@@ -104,7 +86,7 @@ class App extends Component {
     // console.log(this.state.trackingHistory);
     return (
       <View style={styles.container}>
-        <Map />
+        <Map trackingHistory={this.state.trackingHistory} />
         {!anchorDropped &&
           <Button
             title="Set anchor position"

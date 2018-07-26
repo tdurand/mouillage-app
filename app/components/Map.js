@@ -35,6 +35,27 @@ export default class Map extends PureComponent {
   componentWillUnmount() {
     console.log('Unmounting map')
   }
+
+
+  renderTrackingHistory () {
+
+    // TODO MOVE in its own component
+
+    // if(this.state.trackingHistory.length < 2) {
+    //   return;
+    // }
+
+    // var geojsonLine = { "type": "LineString", "coordinates": this.state.trackingHistory }
+
+    // return (
+    //   <Mapbox.ShapeSource 
+    //     id='trackingHistory' 
+    //     shape={geojsonLine}
+    //   >
+    //     <Mapbox.LineLayer id='trackingHistoryFill' style={layerStyles.trackingHistory} />
+    //   </Mapbox.ShapeSource>
+    // )
+  }
   
 
   render() {
