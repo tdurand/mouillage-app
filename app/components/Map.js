@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import { Svg, Image, G, Rect } from 'react-native-svg';
 import { STEPS } from '../Constants';
+import throttle from 'lodash.throttle';
 
 import anchorIcon from '../../assets/anchor2.png';
 
@@ -14,6 +15,15 @@ const styles = StyleSheet.create({
 
 export default class Map extends PureComponent {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      userDragged: false
+    }
+
+    this.fitsToCoordinatesThrottled = throttle(this.fitsToCoordinates, 1500)
+  }
 
 
   mapReady() {
@@ -22,10 +32,28 @@ export default class Map extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.map && this.props.locationHistory.length < 3) {
-      this.map.fitToCoordinates(this.props.locationHistory)
+    if(!this.state.userDragged) {
+      this.fitsToCoordinatesThrottled();
     }
     
+  }
+
+  fitsToCoordinates() {
+    if(this.map &&
+      this.props.locationHistory.length > 0 && 
+      !this.state.userDragged) {
+      this.map.fitToCoordinates(this.props.locationHistory, 
+        { 
+          edgePadding: {
+            top: 50,
+            right: 50,
+            bottom: 80,
+            left: 50
+          }, 
+          animated: true
+        }
+      )
+    }
   }
 
   componentWillUnmount() {
@@ -72,12 +100,17 @@ export default class Map extends PureComponent {
         style={styles.map}
         onRegionChange={this.props.handleMapCenterChange}
         onMapReady={() => this.mapReady()}
+        onMoveShouldSetResponder={() => {
+          this.setState({userDragged: true})
+          console.log('userDragged');
+        }}
+        rotateEnabled={false}
       >
-        {/* <Polyline
-          coordinates={this.state.trackingHistory}
+        <Polyline
+          coordinates={this.props.locationHistory}
           strokeColor="#000"
-          strokeWidth={5}
-        /> */}
+          strokeWidth={2}
+        />
         {STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_ANCHOR_LOCATION && 
          this.props.currentMapCenter &&
           <MapView.Marker.Animated

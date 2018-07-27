@@ -9,6 +9,7 @@
   "dependencies": {
     "enumify": "^1.0.4",
     "event-emitter-es6": "^1.1.5",
+    "lodash.throttle": "^4.1.1",
     "react": "16.4.1",
     "react-native": "0.56.0",
     "react-native-maps": "github:mikemorris/react-native-maps#ef5c839252e427268ae2ebbf4f0cced1cb51fed6",

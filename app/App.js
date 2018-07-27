@@ -83,7 +83,7 @@ class App extends Component {
     const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
 
     return (
-      <View style={styles.container}>
+      <View style={styles.container} onResponderMove={() => console.log('moving finger')}>
         {!this.state.currentLocation &&
           <DimmedModal>
             <View style={{
