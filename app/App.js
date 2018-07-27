@@ -2,38 +2,14 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
 import GeolocationProvider from './utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
-import { Enum } from 'enumify';
 import Map from './components/Map';
-import {
-  HeaderBackButton
-} from 'react-navigation';
-
-
-class STEPS extends Enum {}
-STEPS.initEnum({
-  SET_ANCHOR_LOCATION: {
-    get title() { return "Anchor location" },
-    get ctaLabel() { return "Set anchor position"},
-    get next() { return STEPS.SET_RADIUS }
-  },
-  SET_RADIUS: {
-    get title() { return "Adjust radius" },
-    get ctaLabel() { return "Start alarm"},
-    get next() { return STEPS.MONITOR },
-    get previous() { return STEPS.SET_ANCHOR_LOCATION }
-  },
-  MONITOR: {
-    get title() { return "Watching anchor" },
-    get ctaLabel() { return "Stop monitoring"},
-    get stop() { return STEPS.SET_ANCHOR_LOCATION }
-  }
-});
+import { HeaderBackButton } from 'react-navigation';
+import { STEPS } from './Constants';
 
 class App extends Component {
 
   static navigationOptions = ({ navigation }) => {
     const currentStep = navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
-    console.log(currentStep);
     let headerConfig = {
       title: currentStep.title
     }
@@ -64,7 +40,6 @@ class App extends Component {
   initGeolocationProvider() {
     GeolocationProvider.init();
     GeolocationProvider.on('location', (location) => {
-      console.log(JSON.stringify(location));
       // handle your locations here
       // to perform long running operation on iOS
       // you need to create background task
@@ -96,11 +71,13 @@ class App extends Component {
   render() {
 
     const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
-    console.log(STEPS.enumValueOf(currentStep.name));
 
     return (
       <View style={styles.container}>
-        <Map trackingHistory={this.state.trackingHistory} />
+        <Map 
+          trackingHistory={this.state.trackingHistory}
+          currentStep={currentStep}
+        />
         {STEPS.enumValueOf(currentStep.name) === STEPS.SET_ANCHOR_LOCATION &&
           <Button
             title={currentStep.ctaLabel}
