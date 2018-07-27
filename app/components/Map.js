@@ -35,7 +35,12 @@ export default class Map extends PureComponent {
     if(!this.state.userDragged) {
       this.fitsToCoordinatesThrottled();
     }
-    
+
+    if(prevProps.currentLocation === null && 
+       this.props.currentLocation !== null) {
+      console.log('Animate to first GPS fix')
+      this.map.animateToCoordinate(this.props.currentLocation)
+    }
   }
 
   fitsToCoordinates() {
