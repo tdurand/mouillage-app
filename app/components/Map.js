@@ -58,12 +58,7 @@ export default class Map extends PureComponent {
         key="test"
         loadingEnabled
         // loadingBackgroundColor="transparent"
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
-        }}
+        initialRegion={this.props.initialRegion}
         showsCompass={true}
         style={styles.map}
         onRegionChange={this.props.handleMapCenterChange}
