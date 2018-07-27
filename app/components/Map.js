@@ -14,9 +14,18 @@ const styles = StyleSheet.create({
 
 export default class Map extends PureComponent {
 
+
+
   mapReady() {
     console.log(this.map);
     // debugger;
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.map && this.props.locationHistory.length < 3) {
+      this.map.fitToCoordinates(this.props.locationHistory)
+    }
+    
   }
 
   componentWillUnmount() {
