@@ -27,14 +27,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      trackingHistory: [],
+      locationHistory: [],
       anchorLocation: null,
-      radius: 20,
-      currentPosition: {
+      safetyRadius: 20,
+      currentLocation: {
         latitude: null,
         longitude: null
-      }
+      },
+      currentMapCenter: null
     }
+
+    this.handleMapCenterChange = this.handleMapCenterChange.bind(this);
   }
 
   initGeolocationProvider() {
@@ -53,8 +56,8 @@ class App extends Component {
       // console.log(lnglat);
 
       this.setState({
-        trackingHistory: this.state.trackingHistory.concat([lnglat]),
-        currentPosition: lnglat
+        locationHistory: this.state.locationHistory.concat([lnglat]),
+        currentLocation: lnglat
       })
     })
   }
@@ -68,6 +71,15 @@ class App extends Component {
     GeolocationProvider.clean();
   }
 
+  handleMapCenterChange(region) {
+    this.setState({
+      currentMapCenter: {
+        latitude: region.latitude,
+        longitude: region.longitude
+      }
+    });
+  }
+
   render() {
 
     const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
@@ -75,13 +87,23 @@ class App extends Component {
     return (
       <View style={styles.container}>
         <Map 
-          trackingHistory={this.state.trackingHistory}
+          locationHistory={this.state.locationHistory}
           currentStep={currentStep}
+          currentLocation={this.state.currentLocation}
+          currentMapCenter={this.state.currentMapCenter}
+          anchorLocation={this.state.anchorLocation}
+          safetyRadius={this.state.safetyRadius}
+          handleMapCenterChange={this.handleMapCenterChange}
         />
         {STEPS.enumValueOf(currentStep.name) === STEPS.SET_ANCHOR_LOCATION &&
           <Button
             title={currentStep.ctaLabel}
-            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.next })}
+            onPress={() => {
+              this.setState({
+                anchorLocation: this.state.currentMapCenter
+              })
+              this.props.navigation.setParams({ currentStep: currentStep.next });
+            }}
           />
         }
         {STEPS.enumValueOf(currentStep.name) === STEPS.SET_RADIUS &&

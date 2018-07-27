@@ -4,7 +4,7 @@ export class STEPS extends Enum {}
 STEPS.initEnum({
   SET_ANCHOR_LOCATION: {
     get title() { return "Anchor location" },
-    get ctaLabel() { return "Set anchor position"},
+    get ctaLabel() { return "Set anchor location"},
     get next() { return STEPS.SET_RADIUS }
   },
   SET_RADIUS: {

@@ -14,14 +14,6 @@ const styles = StyleSheet.create({
 
 export default class Map extends PureComponent {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentMapCenter: null
-    }
-  }
-
   mapReady() {
     console.log(this.map);
     // debugger;
@@ -74,14 +66,7 @@ export default class Map extends PureComponent {
         }}
         showsCompass={true}
         style={styles.map}
-        onRegionChange={(region) => {
-          this.setState({
-            currentMapCenter: {
-              latitude: region.latitude,
-              longitude: region.longitude
-            }
-          })
-        }}
+        onRegionChange={this.props.handleMapCenterChange}
         onMapReady={() => this.mapReady()}
       >
         {/* <Polyline
@@ -90,11 +75,11 @@ export default class Map extends PureComponent {
           strokeWidth={5}
         /> */}
         {STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_ANCHOR_LOCATION && 
-         this.state.currentMapCenter &&
+         this.props.currentMapCenter &&
           <MapView.Marker.Animated
             key='anchor-marker2'
             pinColor="blue"
-            coordinate={this.state.currentMapCenter}
+            coordinate={this.props.currentMapCenter}
           />
         }
         {STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_RADIUS &&
@@ -103,19 +88,13 @@ export default class Map extends PureComponent {
               radius={30}
               strokeWidth={3}
               strokeColor="red"
-              center={{
-                latitude: 37.78825,
-                longitude: -122.4324
-              }}
+              center={this.props.anchorLocation}
             />  
             <Marker
               key='anchor-marker'
               anchor={{ x: 0.5, y: 0.5 }}
               centerOffset={{ x: 0, y: 0 }}
-              coordinate={{
-                latitude: 37.78825,
-                longitude: -122.4324
-              }}
+              coordinate={this.props.anchorLocation}
             >
               {/* //7 15 15 */}
               <View>
