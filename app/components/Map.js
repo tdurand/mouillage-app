@@ -27,7 +27,7 @@ export default class Map extends PureComponent {
 
 
   mapReady() {
-    console.log(this.map);
+    // console.log(this.map);
     // debugger;
   }
 
@@ -38,7 +38,7 @@ export default class Map extends PureComponent {
 
     if(prevProps.currentLocation === null && 
        this.props.currentLocation !== null) {
-      console.log('Animate to first GPS fix')
+      // console.log('Animate to first GPS fix')
       this.map.animateToCoordinate(this.props.currentLocation)
     }
   }
@@ -62,7 +62,7 @@ export default class Map extends PureComponent {
   }
 
   componentWillUnmount() {
-    console.log('Unmounting map')
+    // console.log('Unmounting map')
   }
 
 
@@ -107,7 +107,7 @@ export default class Map extends PureComponent {
         onMapReady={() => this.mapReady()}
         onMoveShouldSetResponder={() => {
           this.setState({userDragged: true})
-          console.log('userDragged');
+          // console.log('userDragged');
         }}
         rotateEnabled={false}
       >

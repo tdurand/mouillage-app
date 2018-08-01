@@ -39,29 +39,39 @@ class App extends Component {
   }
 
   initGeolocationProvider() {
-    GeolocationProvider.init();
     GeolocationProvider.on('location', (location) => {
-      // handle your locations here
-      // to perform long running operation on iOS
-      // you need to create background task
-      const lnglat = {
-        longitude: location.longitude, 
-        latitude: location.latitude
-      }
-
       // // TODO if location.accuracy > ?? m blabla
       // // END TODO
       // // console.log(lnglat);
+      this.updateLocation(location);
+    });
+    GeolocationProvider.init();
+    
+  }
 
-      this.setState({
-        locationHistory: this.state.locationHistory.concat([lnglat]),
-        currentLocation: lnglat
-      })
-    })
+  updateLocation(location) {
+    const lnglat = {
+      longitude: location.longitude, 
+      latitude: location.latitude
+    }
+
+    // // TODO if location.accuracy > ?? m blabla
+    // // END TODO
+    // // console.log(lnglat);
+
+    this.setState({
+      locationHistory: this.state.locationHistory.concat([lnglat]),
+      currentLocation: location
+    });
   }
 
   componentDidMount() {
     this.initGeolocationProvider();
+    // GeolocationProvider.getCurrentLocation().then((location) => {
+    //   this.updateLocation(location);
+    // }, (error) => {
+    //   // alert("error geolocation initial " + error)
+    // })
   }
 
   componentWillUnmount() {
@@ -70,6 +80,7 @@ class App extends Component {
   }
 
   handleMapCenterChange(region) {
+    // console.log('blabla');
     this.setState({
       currentMapCenter: {
         latitude: region.latitude,
@@ -82,26 +93,26 @@ class App extends Component {
 
     const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
 
+    // console.log(this.state.locationHistory.length);
+
     return (
-      <View style={styles.container} onResponderMove={() => console.log('moving finger')}>
-        {!this.state.currentLocation &&
-          <DimmedModal>
-            <View style={{
-                width: '90%',
-                borderColor: '#ccc',
-                borderWidth: 1,
-                borderStyle: 'solid',
-                backgroundColor: 'white',
-                elevation: 20,
-                padding: 10,
-                borderRadius: 4,
-                alignItems: 'center'
-            }}>
-                <Text>Getting accurate GPS location...</Text>
-                <ActivityIndicator size="small" />
-            </View>
-          </DimmedModal>
-        }
+      <View style={styles.container}>
+        <DimmedModal visible={this.state.locationHistory.length < 1}>
+          <View style={{
+              width: '90%',
+              borderColor: '#ccc',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              backgroundColor: 'white',
+              elevation: 20,
+              padding: 10,
+              borderRadius: 4,
+              alignItems: 'center'
+          }}>
+              <Text>Getting accurate GPS location...</Text>
+              <ActivityIndicator size="small" />
+          </View>
+        </DimmedModal>
         <Map 
           initialRegion={{
             latitude: 13.95752,

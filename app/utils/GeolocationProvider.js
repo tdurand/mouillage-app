@@ -36,6 +36,7 @@ class GeolocationProvider extends EventEmitter {
           }
        */
       this.emit("location", location);
+      console.log(location);
     });
 
     BackgroundGeolocation.on('stationary', (stationaryLocation) => {
@@ -44,7 +45,7 @@ class GeolocationProvider extends EventEmitter {
     });
 
     BackgroundGeolocation.on('error', (error) => {
-      console.log('[ERROR] BackgroundGeolocation error:', error);
+      alert('[ERROR] BackgroundGeolocation error:', error);
     });
 
     BackgroundGeolocation.on('start', () => {
@@ -59,11 +60,11 @@ class GeolocationProvider extends EventEmitter {
       console.log('[INFO] BackgroundGeolocation authorization status: ' + status);
       if (status !== BackgroundGeolocation.AUTHORIZED) {
         // we need to set delay or otherwise alert may not be shown
-        // setTimeout(() =>
-        //   Alert.alert('App requires location tracking permission', 'Would you like to open app settings?', [
-        //     { text: 'Yes', onPress: () => BackgroundGeolocation.showAppSettings() },
-        //     { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' }
-        //   ]), 1000);
+        setTimeout(() =>
+          Alert.alert('App requires location tracking permission', 'Would you like to open app settings?', [
+            { text: 'Yes', onPress: () => BackgroundGeolocation.showAppSettings() },
+            { text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel' }
+          ]), 1000);
       }
     });
 
@@ -88,6 +89,20 @@ class GeolocationProvider extends EventEmitter {
       // you can also just start without checking for status
       // BackgroundGeolocation.start();
     });
+  }
+
+  getCurrentLocation() {
+    return new Promise((resolve, reject) => {
+      BackgroundGeolocation.getCurrentLocation((location) => {
+        console.log('Got initial location')
+        console.log(location)
+        resolve(location);
+      }, (code, message) => {
+        console.log('Error while getting initial location')
+        console.log(message)
+        reject(message);
+      }, { enableHighAccuracy : true, timeout: 5000 })
+    })
   }
 
   clean() {

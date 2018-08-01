@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Modal, Text, TouchableHighlight, View} from 'react-native';
 
-export default class DimmedModal extends React.PureComponent {
+export default class DimmedModal extends React.Component {
 
   render() {
       return (
