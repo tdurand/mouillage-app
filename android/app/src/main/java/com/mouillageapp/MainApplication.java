@@ -3,6 +3,7 @@ package com.mouillageapp;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.beefe.picker.PickerViewPackage;
 import com.horcrux.svg.SvgPackage;
 import com.marianhello.bgloc.react.BackgroundGeolocationPackage;
 import com.facebook.react.ReactNativeHost;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new PickerViewPackage(),
             new SvgPackage(),
           new BackgroundGeolocationPackage(),
           new MapsPackage()
