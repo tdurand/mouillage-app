@@ -7,6 +7,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@turf/distance": "^6.0.1",
+    "@turf/helpers": "^6.1.4",
     "enumify": "^1.0.4",
     "event-emitter-es6": "^1.1.5",
     "lodash.throttle": "^4.1.1",

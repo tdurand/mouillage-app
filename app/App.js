@@ -4,6 +4,8 @@ import GeolocationProvider from './utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
 import Map from './components/Map';
 import { HeaderBackButton } from 'react-navigation';
+import turfDistance from '@turf/distance';
+import { point as turfPoint } from '@turf/helpers';
 import { STEPS } from './Constants';
 import DimmedModal from './components/DimmedModal';
 
@@ -31,6 +33,7 @@ class App extends Component {
       locationHistory: [],
       anchorLocation: null,
       safetyRadius: 20,
+      distanceToAnchor: null,
       currentLocation: null,
       currentMapCenter: null
     }
@@ -62,6 +65,28 @@ class App extends Component {
     this.setState({
       locationHistory: this.state.locationHistory.concat([lnglat]),
       currentLocation: location
+    });
+
+    if(this.state.anchorLocation !== null) {
+      // Compute distance to anchor
+      let anchorPosition = turfPoint([this.state.anchorLocation.longitude, this.state.anchorLocation.latitude]);
+      let boatPosition = turfPoint([location.longitude, location.latitude]);
+      let distance = turfDistance(anchorPosition, boatPosition);
+      this.setState({
+        distanceToAnchor: Math.round(distance * 1000)
+      })
+    }
+  }
+
+  startMonitoring() {
+    // this.setState({
+    //   isMonitoringAnchor: true
+    // });
+  }
+
+  stopMonitoring() {
+    this.setState({
+      distanceToAnchor: null
     });
   }
 
@@ -135,6 +160,7 @@ class App extends Component {
               this.setState({
                 anchorLocation: this.state.currentMapCenter
               })
+
               this.props.navigation.setParams({ currentStep: currentStep.next });
             }}
           />
@@ -142,15 +168,24 @@ class App extends Component {
         {STEPS.enumValueOf(currentStep.name) === STEPS.SET_RADIUS &&
           <Button
             title={currentStep.ctaLabel}
-            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.next })}
+            onPress={() => {
+              this.props.navigation.setParams({ currentStep: currentStep.next })
+              this.startMonitoring();
+            }}
           />
         }
         {STEPS.enumValueOf(currentStep.name) === STEPS.MONITOR &&
           <Button
             title={currentStep.ctaLabel}
-            onPress={() => this.props.navigation.setParams({ currentStep: currentStep.stop })}
+            onPress={() => {
+              this.props.navigation.setParams({ currentStep: currentStep.stop });
+              this.stopMonitoring();
+            }}
           />
         }
+        <View>
+          <Text>Distance to anchor: {this.state.distanceToAnchor}m</Text>
+        </View>
       </View>
     );
   }

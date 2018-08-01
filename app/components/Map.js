@@ -1,11 +1,14 @@
 import MapView, { Polyline, Circle, Marker } from 'react-native-maps';
 import React, { PureComponent } from 'react';
 import { StyleSheet, View, Alert, Animated, Button, Easing } from 'react-native';
-import { Svg, Image, G, Rect } from 'react-native-svg';
+
 import { STEPS } from '../Constants';
 import throttle from 'lodash.throttle';
+import CustomMarker from './CustomMarker';
 
 import anchorIcon from '../../assets/anchor2.png';
+import boatIcon from '../../assets/boat.png';
+
 
 const styles = StyleSheet.create({
   map: {
@@ -89,11 +92,6 @@ export default class Map extends PureComponent {
 
   render() {
 
-    
-    const imgWidth = 20;
-    // Where 44 is the original height and 30 the original width
-    const imgHeight = (44 * imgWidth) / 30;
-
     return (
       <MapView
         ref={(map) => this.map = map}
@@ -119,56 +117,37 @@ export default class Map extends PureComponent {
         {STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_ANCHOR_LOCATION && 
          this.props.currentMapCenter &&
           <MapView.Marker.Animated
-            key='anchor-marker2'
             pinColor="blue"
             coordinate={this.props.currentMapCenter}
           />
         }
-        {STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_RADIUS &&
+        {this.props.currentLocation &&
+          <CustomMarker 
+            rotation={this.props.currentLocation.bearing}
+            location={this.props.currentLocation}
+            icon={boatIcon}
+            width={20}
+            originalWidth={96}
+            originalHeight={124}
+          />
+        }
+        {(STEPS.enumValueOf(this.props.currentStep.name) === STEPS.SET_RADIUS ||
+          STEPS.enumValueOf(this.props.currentStep.name) === STEPS.MONITOR) &&
           <>
             <Circle 
               radius={30}
               strokeWidth={3}
-              strokeColor="red"
+              strokeColor="blue"
               center={this.props.anchorLocation}
             />  
-            <Marker
-              key='anchor-marker'
-              anchor={{ x: 0.5, y: 0.5 }}
-              centerOffset={{ x: 0, y: 0 }}
-              coordinate={this.props.anchorLocation}
-            >
-              {/* //7 15 15 */}
-              <View>
-                <Svg 
-                  width={imgHeight*2} 
-                  height={imgHeight*2} 
-                > 
-                  <G
-                    x="0"
-                    y="0"
-                    rotation="210"
-                    origin={`${imgHeight},${imgHeight}`} 
-                  >
-                    {/* Debugging Rect */}
-                    {/* <Rect
-                      x="0"
-                      y="0"
-                      height={imgHeight * 2} 
-                      width={imgHeight * 2} 
-                      stroke="#060"
-                      fill="transparent"
-                    /> */}
-                    <Image
-                      x={imgHeight - imgWidth/2}
-                      width={imgWidth}
-                      height={imgHeight}
-                      href={anchorIcon} 
-                    />
-                  </G>
-                </Svg>
-              </View>
-            </Marker>
+            <CustomMarker 
+              rotation={0}
+              location={this.props.anchorLocation}
+              icon={anchorIcon}
+              width={20}
+              originalWidth={30}
+              originalHeight={44}
+            />
           </>
         }
       </MapView>
