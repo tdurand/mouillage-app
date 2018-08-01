@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Alert, Animated, Button, Easing, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Alert, Animated, Button, Easing, Text, ActivityIndicator, TextInput } from 'react-native';
 import GeolocationProvider from './utils/GeolocationProvider';
 import { createStackNavigator } from 'react-navigation';
 import Map from './components/Map';
@@ -8,6 +8,7 @@ import turfDistance from '@turf/distance';
 import { point as turfPoint } from '@turf/helpers';
 import { STEPS } from './Constants';
 import DimmedModal from './components/DimmedModal';
+import Picker from 'react-native-picker';
 
 class App extends Component {
 
@@ -29,6 +30,8 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.safetyRadiusValues = this.range(10, 100);
+
     this.state = {
       locationHistory: [],
       anchorLocation: null,
@@ -39,6 +42,26 @@ class App extends Component {
     }
 
     this.handleMapCenterChange = this.handleMapCenterChange.bind(this);
+
+    Picker.init({
+      pickerData: this.safetyRadiusValues,
+      pickerTitleText: "Safety radius",
+      selectedValue: [this.state.safetyRadius],
+      onPickerConfirm: data => {
+        this.setState({
+          safetyRadius: data[0]
+        })
+      },
+      onPickerCancel: data => {
+          console.log(data);
+          // TODO Back currentStep.previous
+      },
+      onPickerSelect: data => {
+        this.setState({
+          safetyRadius: data[0]
+        })
+      }
+    });
   }
 
   initGeolocationProvider() {
@@ -114,6 +137,14 @@ class App extends Component {
     });
   }
 
+  range(start, end) {
+    var foo = [];
+    for (var i = start; i <= end; i++) {
+        foo.push(i);
+    }
+    return foo;
+  }
+
   render() {
 
     const currentStep = this.props.navigation.getParam('currentStep', STEPS.SET_ANCHOR_LOCATION)
@@ -160,11 +191,34 @@ class App extends Component {
               this.setState({
                 anchorLocation: this.state.currentMapCenter
               })
-
               this.props.navigation.setParams({ currentStep: currentStep.next });
+              Picker.show();
             }}
           />
         }
+        {/* <DimmedModal visible={STEPS.enumValueOf(currentStep.name) === STEPS.SET_RADIUS}>
+          <View style={{
+              width: '90%',
+              borderColor: '#ccc',
+              borderWidth: 1,
+              borderStyle: 'solid',
+              backgroundColor: 'white',
+              elevation: 20,
+              padding: 10,
+              borderRadius: 4,
+              alignItems: 'center'
+          }}>
+              <Picker
+                selectedValue={this.state.safetyRadius}
+                style={{ height: 100, width: 300 }}
+                onValueChange={(itemValue, itemIndex) => this.setState({safetyRadius: itemValue})}>
+                {this.safetyRadiusValues.map((val) => {
+                  <Picker.Item label={val.toString()} value={val} />
+                })}
+              </Picker>
+              
+          </View>
+        </DimmedModal> */}
         {STEPS.enumValueOf(currentStep.name) === STEPS.SET_RADIUS &&
           <Button
             title={currentStep.ctaLabel}

@@ -9,7 +9,7 @@ STEPS.initEnum({
   },
   SET_RADIUS: {
     get title() { return "Adjust radius" },
-    get ctaLabel() { return "Start alarm"},
+    get ctaLabel() { return "Start monitoring"},
     get next() { return STEPS.MONITOR },
     get previous() { return STEPS.SET_ANCHOR_LOCATION }
   },

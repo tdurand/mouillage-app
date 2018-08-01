@@ -135,7 +135,7 @@ export default class Map extends PureComponent {
           STEPS.enumValueOf(this.props.currentStep.name) === STEPS.MONITOR) &&
           <>
             <Circle 
-              radius={30}
+              radius={this.props.safetyRadius}
               strokeWidth={3}
               strokeColor="blue"
               center={this.props.anchorLocation}
